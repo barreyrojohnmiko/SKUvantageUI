@@ -14,7 +14,7 @@ const LandingPageComponent = () => {
 
   const addImage = () => {
     api
-      .get('/200', { responseType: 'blob' })
+      .get('/1000', { responseType: 'blob' })
       .then((response) => {
         const imageUrl = URL.createObjectURL(response.data);
         setImages((prevImages) => [...prevImages, imageUrl]);
@@ -111,6 +111,7 @@ const LandingPageComponent = () => {
           variant="contained"
           startIcon={<DeleteOutlinedIcon />}
           onClick={removeRandomImage}
+          disabled={images.length === 0}
           sx={{
             backgroundColor: '#f44336',
             '&:hover': { backgroundColor: '#d32f2f' },
@@ -133,13 +134,14 @@ const LandingPageComponent = () => {
         {images?.length === 0 ? (
           <Typography
             sx={{
-              height: '100px',
-              width: '100px',
+              height: '25vh',
+              width: '25vh',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               border: '1px solid #ccc',
               textAlign: 'center',
+              borderRadius: '7px',
             }}
           >
             No Image Found
@@ -183,12 +185,13 @@ const LandingPageComponent = () => {
                   src={image}
                   alt="Random"
                   sx={{
-                    height: '100px',
-                    width: '100px',
+                    height: '25vh',
+                    width: '25vh',
                     opacity: getImageOpacity(images.indexOf(image)),
                     transition: 'opacity 0.3s',
                     display: 'block',
                     objectFit: 'cover',
+                    borderRadius: '7px',
                   }}
                 />
               ))}
