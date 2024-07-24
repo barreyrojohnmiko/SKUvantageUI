@@ -97,7 +97,7 @@ const LandingPageComponent = () => {
         justifyContent: 'center',
         alignItems: 'center',
         gap: '30px',
-        bgcolor: '#DCD6F7'
+        bgcolor: '#DCD6F7',
       }}
     >
       <Typography
@@ -136,7 +136,7 @@ const LandingPageComponent = () => {
               sx={{
                 display: 'flex',
                 flexDirection: 'row',
-                gap: '10px',
+                gap: '5px',
                 alignItems: 'center',
               }}
             >
@@ -170,8 +170,8 @@ const LandingPageComponent = () => {
                     src={image}
                     alt="Random"
                     sx={{
-                      height: isMobileView ? '25vw' : '25vh',
-                      width: isMobileView ? '25vw' : '25vh',
+                      height: isMobileView ? '22vw' : '25vh',
+                      width: isMobileView ? '22vw' : '25vh',
                       opacity: getImageOpacity(images.indexOf(image)),
                       transition: 'opacity 0.3s',
                       display: 'block',
