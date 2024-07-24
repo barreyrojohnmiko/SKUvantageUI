@@ -107,7 +107,7 @@ const LandingPageComponent = () => {
         SKUvantage
       </Typography>
 
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center'}}>
         <Box
           sx={{
             mt: 2,
