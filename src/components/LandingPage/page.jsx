@@ -101,7 +101,7 @@ const LandingPageComponent = () => {
       }}
     >
       <Typography
-        sx={{ fontSize: isMobileView ? '40px' : '70px', fontWeight: '700' }}
+        sx={{ fontSize: isMobileView ? '40px' : '70px', fontWeight: '700', color: '#000' }}
       >
         SKUvantage
       </Typography>
@@ -126,6 +126,7 @@ const LandingPageComponent = () => {
                 border: '1px solid #fff',
                 textAlign: 'center',
                 borderRadius: '7px',
+                color: '#000'
               }}
             >
               No Image Found
