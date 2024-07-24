@@ -118,8 +118,8 @@ const LandingPageComponent = () => {
           {images.length === 0 ? (
             <Typography
               sx={{
-                height: isMobileView ? '25vw' : '25vh',
-                width: isMobileView ? '25vw' : '25vh',
+                height: isMobileView ? '22vw' : '25vh',
+                width: isMobileView ? '22vw' : '25vh',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
