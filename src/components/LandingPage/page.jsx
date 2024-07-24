@@ -96,7 +96,6 @@ const LandingPageComponent = () => {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        // bgcolor: '#fff',
         gap: '30px',
         bgcolor: '#DCD6F7'
       }}
