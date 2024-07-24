@@ -1,5 +1,5 @@
-import { Box, Typography } from "@mui/material";
-import { useRouteError } from "react-router-dom";
+import { Box, Typography } from '@mui/material';
+import { useRouteError } from 'react-router-dom';
 
 const GlobalError = () => {
   const error = useRouteError();
@@ -7,22 +7,15 @@ const GlobalError = () => {
   return (
     <Box
       sx={{
-        height: "100vh",
-        width: "100vw",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        p: "50px",
+        height: '100vh',
+        width: '100vw',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        p: '50px',
       }}
     >
-      <img
-        src="/brand/logo.svg"
-        alt="Codemeta"
-        style={{
-          width: "100px",
-        }}
-      />
       <Typography variant="h4" gutterBottom>
         {error.status} {error.name}
       </Typography>
@@ -31,7 +24,7 @@ const GlobalError = () => {
         {error.message}
       </Typography>
 
-      <Typography variant="body2" sx={{ fontFamily: "monospace" }} gutterBottom>
+      <Typography variant="body2" sx={{ fontFamily: 'monospace' }} gutterBottom>
         {error.stack}
       </Typography>
     </Box>
