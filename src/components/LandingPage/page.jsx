@@ -1,5 +1,18 @@
-import { Box, Button, IconButton, Typography } from '@mui/material';
-import { useState } from 'react';
+import { LoadingButton } from '@mui/lab';
+import {
+  Box,
+  Button,
+  IconButton,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
+
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  setCurrentIndex,
+  setImages,
+  setIsLoading,
+} from '../../redux/App/action';
 
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -9,22 +22,31 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import api from '../../services/ApiService';
 
 const LandingPageComponent = () => {
-  const [images, setImages] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const dispatch = useDispatch();
+  const { images, currentIndex, isLoading } = useSelector(
+    (state) => state.appReducers
+  );
+
+  const isMobileView = useMediaQuery('(max-width:960px)');
 
   const addImage = () => {
+    dispatch(setIsLoading(true));
+
     api
-      .get('/1000', { responseType: 'blob' })
+      .get('/720', { responseType: 'blob' })
       .then((response) => {
         const imageUrl = URL.createObjectURL(response.data);
-        setImages((prevImages) => [...prevImages, imageUrl]);
+        dispatch(setImages([...images, imageUrl]));
 
         if (images.length === 0) {
-          setCurrentIndex(0);
+          dispatch(setCurrentIndex(0));
         }
       })
       .catch((error) => {
         console.error('Error fetching the image:', error);
+      })
+      .finally(() => {
+        dispatch(setIsLoading(false));
       });
   };
 
@@ -32,53 +54,37 @@ const LandingPageComponent = () => {
     if (images.length > 0) {
       const randomIndex = Math.floor(Math.random() * images.length);
       const newImages = images.filter((_, index) => index !== randomIndex);
-      setImages(newImages);
+      dispatch(setImages(newImages));
 
       if (currentIndex >= newImages.length) {
-        setCurrentIndex(newImages.length - 1);
+        dispatch(setCurrentIndex(newImages.length - 1));
       }
     }
   };
 
-  const handlePrevious = () => {
-    setCurrentIndex((prevIndex) => Math.max(prevIndex - 1, 0));
+  const handleNext = () => {
+    dispatch(setCurrentIndex(Math.min(currentIndex + 1, images.length - 1)));
   };
 
-  const handleNext = () => {
-    setCurrentIndex((prevIndex) => Math.min(prevIndex + 1, images.length - 1));
+  const handlePrevious = () => {
+    dispatch(setCurrentIndex(Math.max(currentIndex - 1, 0)));
   };
 
   const getVisibleImages = () => {
-    if (images.length === 0) {
-      return [];
+    const maxVisible = isMobileView ? 3 : 6;
+
+    if (images.length <= maxVisible) {
+      return images;
     }
 
-    if (images.length === 1) {
-      return [images[0]];
-    }
+    const startIndex = Math.max(currentIndex - Math.floor(maxVisible / 2), 0);
+    const endIndex = Math.min(startIndex + maxVisible, images.length);
 
-    if (currentIndex === 0) {
-      return [images[currentIndex], images[currentIndex + 1]];
-    }
-
-    if (currentIndex === images.length - 1) {
-      return [images[currentIndex - 1], images[currentIndex]];
-    }
-
-    return [
-      images[currentIndex - 1],
-      images[currentIndex],
-      images[currentIndex + 1],
-    ];
+    return images.slice(Math.max(endIndex - maxVisible, 0), endIndex);
   };
 
   const getImageOpacity = (index) => {
-    if (images.length <= 1) {
-      return 1;
-    }
-
-    if (index === currentIndex) return 1;
-    return 0.5;
+    return index === currentIndex ? 1 : 0.3;
   };
 
   return (
@@ -90,128 +96,146 @@ const LandingPageComponent = () => {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
+        // bgcolor: '#fff',
+        gap: '30px',
+        bgcolor: '#DCD6F7'
       }}
     >
-      <Box sx={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
-        <Button
-          variant="contained"
-          startIcon={<AddPhotoAlternateOutlinedIcon />}
-          onClick={addImage}
-          sx={{
-            backgroundColor: '#4caf50',
-            '&:hover': { backgroundColor: '#45a049' },
-            '&:focus': { outline: 'none' },
-            border: 'none',
-          }}
-        >
-          Add Image
-        </Button>
-
-        <Button
-          variant="contained"
-          startIcon={<DeleteOutlinedIcon />}
-          onClick={removeRandomImage}
-          disabled={images.length === 0}
-          sx={{
-            backgroundColor: '#f44336',
-            '&:hover': { backgroundColor: '#d32f2f' },
-            '&:focus': { outline: 'none' },
-            border: 'none',
-          }}
-        >
-          Remove Random Image
-        </Button>
-      </Box>
-
-      <Box
-        sx={{
-          mt: 2,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
+      <Typography
+        sx={{ fontSize: isMobileView ? '40px' : '70px', fontWeight: '700' }}
       >
-        {images?.length === 0 ? (
-          <Typography
-            sx={{
-              height: '25vh',
-              width: '25vh',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              border: '1px solid #ccc',
-              textAlign: 'center',
-              borderRadius: '7px',
-            }}
-          >
-            No Image Found
-          </Typography>
-        ) : (
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              gap: '10px',
-              alignItems: 'center',
-            }}
-          >
-            <IconButton
-              onClick={handlePrevious}
-              disabled={currentIndex === 0}
-              sx={{
-                borderRadius: '50%',
-                width: '40px',
-                height: '40px',
-                '&:focus': { outline: 'none' },
-                border: 'none',
-              }}
-            >
-              <ArrowBackIcon />
-            </IconButton>
+        SKUvantage
+      </Typography>
 
-            <Box
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+        <Box
+          sx={{
+            mt: 2,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {images.length === 0 ? (
+            <Typography
               sx={{
+                height: isMobileView ? '25vw' : '25vh',
+                width: isMobileView ? '25vw' : '25vh',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                overflow: 'hidden',
-                gap: '10px',
+                border: '1px solid #fff',
+                textAlign: 'center',
+                borderRadius: '7px',
               }}
             >
-              {getVisibleImages().map((image, index) => (
-                <Box
-                  key={index}
-                  component="img"
-                  src={image}
-                  alt="Random"
-                  sx={{
-                    height: '25vh',
-                    width: '25vh',
-                    opacity: getImageOpacity(images.indexOf(image)),
-                    transition: 'opacity 0.3s',
-                    display: 'block',
-                    objectFit: 'cover',
-                    borderRadius: '7px',
-                  }}
-                />
-              ))}
-            </Box>
-
-            <IconButton
-              onClick={handleNext}
-              disabled={currentIndex === images.length - 1}
+              No Image Found
+            </Typography>
+          ) : (
+            <Box
               sx={{
-                borderRadius: '50%',
-                width: '40px',
-                height: '40px',
-                '&:focus': { outline: 'none' },
-                border: 'none',
+                display: 'flex',
+                flexDirection: 'row',
+                gap: '10px',
+                alignItems: 'center',
               }}
             >
-              <ArrowForwardIcon />
-            </IconButton>
-          </Box>
-        )}
+              <IconButton
+                onClick={handlePrevious}
+                disabled={currentIndex === 0}
+                sx={{
+                  borderRadius: '50%',
+                  width: '40px',
+                  height: '40px',
+                  '&:focus': { outline: 'none' },
+                  border: 'none',
+                }}
+              >
+                <ArrowBackIcon />
+              </IconButton>
+
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  overflow: 'hidden',
+                  gap: '10px',
+                }}
+              >
+                {getVisibleImages().map((image, index) => (
+                  <Box
+                    key={index}
+                    component="img"
+                    src={image}
+                    alt="Random"
+                    sx={{
+                      height: isMobileView ? '25vw' : '25vh',
+                      width: isMobileView ? '25vw' : '25vh',
+                      opacity: getImageOpacity(images.indexOf(image)),
+                      transition: 'opacity 0.3s',
+                      display: 'block',
+                      objectFit: 'cover',
+                      borderRadius: '7px',
+                    }}
+                  />
+                ))}
+              </Box>
+
+              <IconButton
+                onClick={handleNext}
+                disabled={currentIndex === images.length - 1}
+                sx={{
+                  borderRadius: '50%',
+                  width: '40px',
+                  height: '40px',
+                  '&:focus': { outline: 'none' },
+                  border: 'none',
+                }}
+              >
+                <ArrowForwardIcon />
+              </IconButton>
+            </Box>
+          )}
+        </Box>
+
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: isMobileView ? 'column' : 'row',
+            gap: '10px',
+          }}
+        >
+          <LoadingButton
+            variant="contained"
+            startIcon={<AddPhotoAlternateOutlinedIcon />}
+            onClick={addImage}
+            loading={isLoading}
+            sx={{
+              backgroundColor: '#4caf50',
+              '&:hover': { backgroundColor: '#45a049' },
+              '&:focus': { outline: 'none' },
+              border: 'none',
+            }}
+          >
+            Add Image
+          </LoadingButton>
+
+          <Button
+            variant="contained"
+            startIcon={<DeleteOutlinedIcon />}
+            onClick={removeRandomImage}
+            disabled={images.length === 0}
+            sx={{
+              backgroundColor: '#f44336',
+              '&:hover': { backgroundColor: '#d32f2f' },
+              '&:focus': { outline: 'none' },
+              border: 'none',
+            }}
+          >
+            Remove Random Image
+          </Button>
+        </Box>
       </Box>
     </Box>
   );
